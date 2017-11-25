@@ -1,11 +1,12 @@
+/*
 var Vue = require('vue')
 var Resource = require('vue-resource')
 
 Vue.use(Resource)
-
-var app = new Vue({
+*/
+new Vue({
       el: '#app',
-      data: {
-        message: 'Hello Vue!'
+      data: function() {
+        return { visible: false }
       }
     })
