@@ -4,11 +4,34 @@ const LocalStrategy = require('passport-local').Strategy
 const app = express()
 const session = require("express-session")
 const bodyParser = require("body-parser")
+const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
+const authenticate = expressJwt({secret : 'server secret'});
 const mongotalk = require('./js/mongotalk.js')
 
 const SUCCESS_OBJ = true;
 const FAILURE_OBJ = false;
 const UNAUTH_OBJ = "bad cat you can't do that";
+
+function serialize(req,res,next) {
+        next();
+}
+
+function generateToken(req, res, next) {
+        req.token = jwt.sign({
+                username: req.user.username,
+                }, 'server secret', {
+                expiresIn: 3600*24
+        });
+        next();
+}
+
+function respond(req, res) {
+  res.status(200).json({
+    user: req.user,
+    token: req.token
+  });
+}
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -39,6 +62,11 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+})
 
 
 // Simple route middleware to ensure user is authenticated.
@@ -51,15 +79,15 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login')
 }
 
-app.post('/login',
-        passport.authenticate('local'),
-        function(req, res) {
-        // If this function gets called, authentication was successful.
-        // `req.user` contains the authenticated user.
-        res.send(req.user);
-});
 
-app.post('/addcategory', function (req, res) {
+
+
+app.post('/login', passport.authenticate(
+  'local', {
+    session: false
+  }), serialize, generateToken, respond);
+
+app.post('/addcategory', authenticate, function (req, res) {
         if(!req.isAuthenticated())
                 res.send(UNAUTH_OBJ)
         else
@@ -73,7 +101,7 @@ app.post('/addcategory', function (req, res) {
         }
 });
 
-app.post('/removecategory', function (req, res) {
+app.post('/removecategory', authenticate, function (req, res) {
         if(!req.isAuthenticated())
                 res.send(UNAUTH_OBJ)
         else
@@ -87,7 +115,7 @@ app.post('/removecategory', function (req, res) {
         }
 });
 
-app.post('/updatecategory', function (req, res) {
+app.post('/updatecategory', authenticate, function (req, res) {
         if(!req.isAuthenticated())
                 res.send(UNAUTH_OBJ)
         else
