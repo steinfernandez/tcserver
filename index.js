@@ -43,12 +43,17 @@ passport.deserializeUser(function(id, done) {
 
 passport.use(new LocalStrategy(
         function(username, password, done) {
-                mongotalk.user.auth(username, password, function (user) {
-                if (!user)
-                        return done(null, false, { message: 'Authentication failed.' });
-                else
-                        return done(null, user);
-                });
+			try{
+					mongotalk.user.auth(username, password, function (user) {
+					if (!user)
+							return done(null, false, { message: 'Authentication failed.' });
+					else
+							return done(null, user);
+					});
+			}	catch(err){ 
+				console.log(err);
+				return done(null, false, { message: 'Authentication failed.' });
+			};
         }
 ));
 
@@ -64,7 +69,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 })
 
@@ -124,6 +129,39 @@ app.post('/updatecategory', authenticate, function (req, res) {
                         mongotalk.board.updateCategory(req.user.username, parseInt(req.body.catindex), JSON.parse(req.body.newcat));
                         res.send(SUCCESS_OBJ)
                 } catch(err) {
+                        res.send(FAILURE_OBJ)
+                };
+        }
+});
+
+app.post('/updateall', authenticate, function (req, res) {
+        if(!req.isAuthenticated())
+                res.send(UNAUTH_OBJ)
+        else
+        {
+                try {
+						console.log(req.body);
+                        mongotalk.board.updateAll(req.user.username, JSON.parse(req.body.board));
+                        res.send(SUCCESS_OBJ)
+                } catch(err) {
+		console.log(err);
+                        res.send(FAILURE_OBJ)
+                };
+        }
+});
+
+app.post('/retrieveall', authenticate, function (req, res) {
+        if(!req.isAuthenticated())
+                res.send(UNAUTH_OBJ)
+        else
+        {
+                try {
+						console.log(req.body);
+                        mongotalk.board.retrieveAll(req.user.username,function(result) {
+							res.send(result);
+						});
+                } catch(err) {
+						console.log(err);
                         res.send(FAILURE_OBJ)
                 };
         }

@@ -1,0 +1,131 @@
+{
+	"variables": [],
+	"info": {
+		"name": "tcserver",
+		"_postman_id": "7d2e8125-be56-707b-2b37-ba94af7b3c2e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "{{url}}/login",
+			"request": {
+				"url": "{{url}}/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "user1",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "user1user1",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "user1 login"
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/addcategory",
+			"request": {
+				"url": "{{url}}/addcategory",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "newcat",
+							"value": "{\"categoryName\":\"kittens\",\"taskList\":[]}",
+							"type": "text",
+							"description": ""
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/updatecategory",
+			"request": {
+				"url": "{{url}}/updatecategory",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "catindex",
+							"value": "0,",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "newcat",
+							"value": "{\"categoryName\":\"puppies\",\"taskList\":[]}",
+							"type": "text",
+							"description": ""
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/removecategory",
+			"request": {
+				"url": "{{url}}/removecategory",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "catindex",
+							"value": "0",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
